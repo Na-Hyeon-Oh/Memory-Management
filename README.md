@@ -54,7 +54,7 @@ Implementation of Page Replacement Policies for Demand Paging System.
 |OS43_2021-1_2019311923_OhNaHyeon.c|main file|
 |Makefile|bash script|
 |memManagement|execution file|
-|input files|test cases|
+|input files|test cases in following [format](#inputF)|
 
 ### Compile and Execute
 
@@ -72,3 +72,40 @@ make
 |LRU| ⚫ Page frame에 할당되어 있는 page reference들을 대상으로 timestamp table인 time(lookup table)에 저장<br> ⚫ 만약 page fault가 발생하지 않는다면 (할당된 page reference들 중에 같은 reference value 찾는 경우) 다음 page reference 검사<br> ⚫ 만약 page fault가 발생 (할당된 page reference들 중에 같은 reference value 찾지 못하였을 경우) <br>- 할당된 page frame # < M : 가능한 다음 page frame #에 해당 page reference 할당<br>- 할당된 page frame # == M (가득 참) : time에서 그 값이 최소 (past-used t가 가장 작음)인 page reference로 replace<br> ▶️ 다음 page reference 검사|
 |LFU| ⚫ Page frame에 할당되어 있는 page reference들을 대상으로 현재까지 사용된 횟수를 cnt(lookup table)에 저장<br> ⚫ Tie-breaking rule (같은 최소 cnt를 가지는 경우) : LRU<br> ⚫ timestamp table인 time(lookup table)<br> ⚫ 만약 page fault가 발생하지 않는다면 (할당된 page reference들 중에 같은 reference value 찾는 경우) 다음 page reference 검사<br> ⚫ 만약 page fault가 발생 (할당된 page reference들 중에 같은 reference value 찾지 못하였을 경우)<br>- 할당된 page frame # < M : 가능한 다음 page frame #에 해당 page reference 할당<br>- 할당된 page frame # == M (가득 참) : cnt에서 그 값이 최소 (past-used 횟수가 가장 작음)인 page reference로 replace, 만약 같은 값이 여러 개라면 time에서 그 값이 최소인 page reference로 replace<br> ▶️ 다음 page reference 검사|
 |WS| ⚫ Page frame(memory)를 Queue처럼 구현; FIFO 방식과 비슷<br>- Queue에 매 t마다 page reference를 enqueue<br>- Queue의 head와 tail을 W를 고려하여 그 간격을 일정하게 이동시킴<br> ⚫ 전 t에 memory에 할당되었던 page reference를 traceWS에 저장 : traceWS { int cnt //size of last + int* last //page reference array allocated at (t-1)} <br> ⚫ page fault가 발생 (현 t의 page reference와 last를 cnt(->allocated)만큼 비교하여 같은 것이 있는 경우) / page fault가 발생 (할당된 page reference들 중에 같은 reference value 찾지 못하였을 경우)하는 경우 모두에서 memory Queue의 head, tail 값을 알맞게 조정|
+
+### Input Format <a name="inputF"></a>
+  
+  ```
+  N M W K
+  r1r2r3r4 ... rk
+  ```
+  
+  - N : page # of process (max: 100, from 0)
+  - M : allocated page frame # (max: 20)
+  - W : window size (max: 100)
+  - K : length of page reference string (max: 1,000)
+  - r : page reference string
+  
+### Output Format
+ 
+  ```
+MIN
+(total page fault #)
+(change process of memory state with location of the page fault occurrence)
+
+FIFO
+(total page fault #)
+(change process of memory state with location of the page fault occurrence)
+
+LRU
+(total page fault #)
+(change process of memory state with location of the page fault occurrence)
+
+LFU
+(total page fault #)
+(change process of memory state with location of the page fault occurrence)
+
+WS
+(total page fault #)
+(change process of memory state with location of the page fault occurrence)
+  ```
